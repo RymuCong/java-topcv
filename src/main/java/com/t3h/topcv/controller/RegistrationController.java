@@ -1,6 +1,6 @@
 package com.t3h.topcv.controller;
 
-import com.t3h.topcv.entity.User;
+import com.t3h.topcv.entity.Account;
 import com.t3h.topcv.service.UserService;
 import com.t3h.topcv.user.WebUser;
 import jakarta.servlet.http.HttpSession;
@@ -21,7 +21,7 @@ public class RegistrationController {
 
 	private Logger logger = Logger.getLogger(getClass().getName());
 
-    private UserService userService;
+    private final UserService userService;
 
 	@Autowired
 	public RegistrationController(UserService userService) {
@@ -39,14 +39,14 @@ public class RegistrationController {
 	@GetMapping("/showRegistrationForm")
 	public String showMyLoginPage(Model theModel) {
 		
-		theModel.addAttribute("webUser", new WebUser());
+		theModel.addAttribute("webAccount", new WebUser());
 		
 		return "register/registration-form";
 	}
 
 	@PostMapping("/processRegistrationForm")
 	public String processRegistrationForm(
-			@Valid @ModelAttribute("webUser") WebUser theWebUser,
+			@Valid @ModelAttribute("webAccount") WebUser theWebUser,
 			BindingResult theBindingResult,
 			HttpSession session, Model theModel) {
 
@@ -58,23 +58,23 @@ public class RegistrationController {
 			 return "register/registration-form";
 		 }
 
-		// check the database if user already exists
-        User existing = userService.findByUserName(userName);
+		// check the database if account already exists
+        Account existing = userService.findByUserName(userName);
         if (existing != null){
-        	theModel.addAttribute("webUser", new WebUser());
-			theModel.addAttribute("registrationError", "User name already exists.");
+        	theModel.addAttribute("webAccount", new WebUser());
+			theModel.addAttribute("registrationError", "Account name already exists.");
 
-			logger.warning("User name already exists.");
+			logger.warning("Account name already exists.");
         	return "register/registration-form";
         }
         
-        // create user account and store in the databse
+        // create account and store in the database
         userService.save(theWebUser);
         
-        logger.info("Successfully created user: " + userName);
+        logger.info("Successfully created account: " + userName);
 
-		// place user in the web http session for later use
-		session.setAttribute("user", theWebUser);
+		// place account in the web http session for later use
+		session.setAttribute("account", theWebUser);
 
         return "register/registration-confirmation";
 	}

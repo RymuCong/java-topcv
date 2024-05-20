@@ -1,9 +1,9 @@
 package com.t3h.topcv.service;
 
 import com.t3h.topcv.dao.RoleDao;
-import com.t3h.topcv.dao.UserDao;
+import com.t3h.topcv.dao.AccountDao;
 import com.t3h.topcv.entity.Role;
-import com.t3h.topcv.entity.User;
+import com.t3h.topcv.entity.Account;
 import com.t3h.topcv.user.WebUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,47 +19,47 @@ import java.util.Collection;
 @Service
 public class UserServiceImpl implements UserService {
 
-	private UserDao userDao;
+	private final AccountDao accountDao;
 
-	private RoleDao roleDao;
+	private final RoleDao roleDao;
 
-	private BCryptPasswordEncoder passwordEncoder;
+	private final BCryptPasswordEncoder passwordEncoder;
 
 	@Autowired
-	public UserServiceImpl(UserDao userDao, RoleDao roleDao, BCryptPasswordEncoder passwordEncoder) {
-		this.userDao = userDao;
+	public UserServiceImpl(AccountDao accountDao, RoleDao roleDao, BCryptPasswordEncoder passwordEncoder) {
+		this.accountDao = accountDao;
 		this.roleDao = roleDao;
 		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
-	public User findByUserName(String userName) {
-		// check the database if the user already exists
-		return userDao.findByUserName(userName);
+	public Account findByUserName(String userName) {
+		// check the database if the account already exists
+		return accountDao.findByUserName(userName);
 	}
 
 	@Override
-	public void save(WebUser webUser) {
-		User user = new User();
+	public void save(WebUser webAccount) {
+		Account account = new Account();
 
-		// assign user details to the user object
-		user.setUserName(webUser.getUserName());
-		user.setPassword(passwordEncoder.encode(webUser.getPassword()));
-		user.setFirstName(webUser.getFirstName());
-		user.setLastName(webUser.getLastName());
-		user.setEmail(webUser.getEmail());
-		user.setEnabled(true);
+		// assign account details to the account object
+		account.setUserName(webAccount.getUserName());
+		account.setPassword(passwordEncoder.encode(webAccount.getPassword()));
+		account.setFirstName(webAccount.getFirstName());
+		account.setLastName(webAccount.getLastName());
+		account.setEmail(webAccount.getEmail());
+		account.setEnabled(true);
 
-		// give user default role of "employee"
-		user.setRoles(Arrays.asList(roleDao.findRoleByName("ROLE_EMPLOYEE")));
+		// give account default role of "employee"
+		account.setRoles(Arrays.asList(roleDao.findRoleByName("ROLE_EMPLOYEE")));
 
-		// save user in the database
-		userDao.save(user);
+		// save account in the database
+		accountDao.save(account);
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-		User user = userDao.findByUserName(userName);
+		Account user = accountDao.findByUserName(userName);
 
 		if (user == null) {
 			throw new UsernameNotFoundException("Invalid username or password.");

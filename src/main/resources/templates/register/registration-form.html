@@ -19,7 +19,7 @@
         <div class="card border-info">
 
             <div class="card-header bg-info">
-                New User Registration
+                New Account Registration
             </div>
 
             <div class="card-body">
@@ -28,7 +28,7 @@
 
                     <!-- Registration Form -->
                     <form action="#" th:action="@{/register/processRegistrationForm}"
-                          th:object="${webUser}"
+                          th:object="${webAccount}"
                           method="POST" class="form-horizontal">
 
                         <!-- Place for messages: error, alert etc ... -->
@@ -50,15 +50,15 @@
                             </div>
                         </div>
 
-                        <!-- User name -->
+                        <!-- Account name -->
                         <div style="margin-bottom: 25px" class="input-group">
-                            <input type="text" th:field="*{userName}" placeholder="Username (*)" class="form-control" />
+                            <input type="text" th:field="*{userName}" placeholder="Accountname (*)" class="form-control" />
                         </div>
 
                         <div th:if="${#fields.hasErrors('userName')}"
                              style="margin-bottom: 25px" class="text-danger">
                             <ul>
-                                <li th:each="err : ${#fields.errors('userName')}" th:text="'User name ' + ${err}" />
+                                <li th:each="err : ${#fields.errors('userName')}" th:text="'Account name ' + ${err}" />
                             </ul>
                         </div>
 

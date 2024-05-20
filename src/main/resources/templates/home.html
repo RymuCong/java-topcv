@@ -16,16 +16,16 @@ Welcome to the luv2code company home page!
 
 <hr>
 
-<!-- display user name and role(s) -->
+<!-- display account name and role(s) -->
 
 <p>
-    User: <span sec:authentication="principal.username"></span>
+    Account: <span sec:authentication="principal.username"></span>
     <br><br>
     Role(s): <span sec:authentication="principal.authorities"></span>
 
     <!-- display first name, last name and email -->
-    <div th:if="${session.user}" >
-        <p th:text="'First name: ' + ${session.user.firstName} + ', Last name: ' + ${session.user.lastName} + ', Email: ' + ${session.user.email}"></p>
+    <div th:if="${session.account}" >
+        <p th:text="'First name: ' + ${session.account.firstName} + ', Last name: ' + ${session.account.lastName} + ', Email: ' + ${session.account.email}"></p>
     </div>
 
 </p>
