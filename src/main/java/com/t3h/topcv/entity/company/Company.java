@@ -1,5 +1,6 @@
-package com.t3h.topcv.entity;
+package com.t3h.topcv.entity.company;
 
+import com.t3h.topcv.entity.Account;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -49,4 +50,7 @@ public class Company {
     @Column(name = "updated_at")
     private String updatedAt;
 
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinColumn(name = "account_id")
+    private Account account;
 }
