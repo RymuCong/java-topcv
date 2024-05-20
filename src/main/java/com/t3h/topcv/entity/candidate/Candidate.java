@@ -1,9 +1,11 @@
-package com.t3h.topcv.entity;
+package com.t3h.topcv.entity.candidate;
 
+import com.t3h.topcv.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -56,5 +58,18 @@ public class Candidate {
 
     @Column(name = "description")
     private String description;
+
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL)
+    private List<Certificate> certificates;
+
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL)
+    private List<Education> educations;
+
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL)
+    private List<Experience> experiences;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }
