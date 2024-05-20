@@ -26,9 +26,9 @@ public class DemoSecurityConfig {
 
     //authenticationProvider bean definition
     @Bean
-    public DaoAuthenticationProvider authenticationProvider(UserService userService) {
+    public DaoAuthenticationProvider authenticationProvider(UserService accountService) {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userService); //set the custom user details service
+        auth.setUserDetailsService(accountService); //set the custom account details service
         auth.setPasswordEncoder(passwordEncoder()); //set the password encoder - bcrypt
         return auth;
     }
@@ -47,7 +47,7 @@ public class DemoSecurityConfig {
                 .formLogin(form ->
                         form
                                 .loginPage("/showMyLoginPage")
-                                .loginProcessingUrl("/authenticateTheUser")
+                                .loginProcessingUrl("/authenticateTheAccount")
                                 .successHandler(customAuthenticationSuccessHandler)
                                 .permitAll()
                 )

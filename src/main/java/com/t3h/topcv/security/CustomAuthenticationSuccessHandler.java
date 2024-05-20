@@ -1,7 +1,7 @@
 package com.t3h.topcv.security;
 
 
-import com.t3h.topcv.entity.User;
+import com.t3h.topcv.entity.Account;
 import com.t3h.topcv.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,10 +16,10 @@ import java.io.IOException;
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final UserService userService;
+    private final UserService accountService;
 
     public CustomAuthenticationSuccessHandler(UserService theUserService) {
-        userService = theUserService;
+        accountService = theUserService;
     }
 
     @Override
@@ -32,11 +32,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         System.out.println("userName=" + userName);
 
-        User theUser = userService.findByUserName(userName);
+        Account theAccount = accountService.findByUserName(userName);
 
         // now place in the session
         HttpSession session = request.getSession();
-        session.setAttribute("user", theUser);
+        session.setAttribute("account", theAccount);
 
         // forward to home page
         response.sendRedirect(request.getContextPath() + "/");
