@@ -1,6 +1,6 @@
 package com.t3h.topcv.entity.candidate;
 
-import com.t3h.topcv.entity.User;
+import com.t3h.topcv.entity.Account;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -69,7 +69,7 @@ public class Candidate {
     private List<Experience> experiences;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
 }
