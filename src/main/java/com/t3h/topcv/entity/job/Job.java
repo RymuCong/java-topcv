@@ -1,4 +1,4 @@
-package com.t3h.topcv.entity;
+package com.t3h.topcv.entity.job;
 
 import jakarta.persistence.*;
 import lombok.Data;
