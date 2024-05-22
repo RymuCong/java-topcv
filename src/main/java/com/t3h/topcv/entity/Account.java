@@ -1,5 +1,7 @@
 package com.t3h.topcv.entity;
 
+import com.t3h.topcv.entity.candidate.Candidate;
+import com.t3h.topcv.entity.company.Company;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -21,17 +23,20 @@ public class Account {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "enabled")
-    private boolean enabled;
+    @Column(name = "status")
+    private Integer status;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "full_name")
+    private String fullName;
 
     @Column(name = "email")
     private String email;
+
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    private Candidate candidate;
+
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    private Company company;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "accounts_roles",
@@ -42,30 +47,17 @@ public class Account {
     public Account() {
     }
 
-    public Account(String userName, String password, boolean enabled) {
+    public Account(String userName, String password, Integer status) {
         this.userName = userName;
         this.password = password;
-        this.enabled = enabled;
+        this.status = status;
     }
 
-    public Account(String userName, String password, boolean enabled,
+    public Account(String userName, String password, Integer status,
                 Collection<Role> roles) {
         this.userName = userName;
         this.password = password;
-        this.enabled = enabled;
+        this.status = status;
         this.roles = roles;
-    }
-
-    @Override
-    public String toString() {
-        return "Account{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", enabled=" + enabled +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", roles=" + roles +
-                '}';
     }
 }

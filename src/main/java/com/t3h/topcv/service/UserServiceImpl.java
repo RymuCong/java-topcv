@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -45,13 +46,12 @@ public class UserServiceImpl implements UserService {
 		// assign account details to the account object
 		account.setUserName(webAccount.getUserName());
 		account.setPassword(passwordEncoder.encode(webAccount.getPassword()));
-		account.setFirstName(webAccount.getFirstName());
-		account.setLastName(webAccount.getLastName());
+		account.setFullName(webAccount.getFullName());
 		account.setEmail(webAccount.getEmail());
-		account.setEnabled(true);
+		account.setStatus(1);
 
 		// give account default role of "employee"
-		account.setRoles(Arrays.asList(roleDao.findRoleByName("ROLE_EMPLOYEE")));
+		account.setRoles(Collections.singletonList(roleDao.findRoleByName("ROLE_EMPLOYEE")));
 
 		// save account in the database
 		accountDao.save(account);

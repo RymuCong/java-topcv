@@ -25,7 +25,7 @@ Welcome to the luv2code company home page!
 
     <!-- display first name, last name and email -->
     <div th:if="${session.account}" >
-        <p th:text="'First name: ' + ${session.account.firstName} + ', Last name: ' + ${session.account.lastName} + ', Email: ' + ${session.account.email}"></p>
+        <p th:text="'Full name: ' + ${session.account.fullName} + ', Email: ' + ${session.account.email}"></p>
     </div>
 
 </p>

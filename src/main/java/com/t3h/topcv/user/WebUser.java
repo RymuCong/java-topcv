@@ -18,11 +18,7 @@ public class WebUser {
 
 	@NotNull(message = "is required")
 	@Size(min = 1, message = "is required")
-	private String firstName;
-
-	@NotNull(message = "is required")
-	@Size(min = 1, message = "is required")
-	private String lastName;
+	private String fullName;
 
 	@NotNull(message = "is required")
 	@Size(min = 1, message = "is required")

@@ -21,7 +21,7 @@ public class AccountDaoImpl implements AccountDao {
 	public Account findByUserName(String theUserName) {
 
 		// retrieve/read from database using username
-		TypedQuery<Account> theQuery = entityManager.createQuery("from Account where userName=:uName and enabled=true", Account.class);
+		TypedQuery<Account> theQuery = entityManager.createQuery("from Account where userName=:uName and status=1", Account.class);
 		theQuery.setParameter("uName", theUserName);
 
 		Account theAccount = null;

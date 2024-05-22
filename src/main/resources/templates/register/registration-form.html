@@ -76,25 +76,13 @@
 
                         <!-- First Name -->
                         <div style="margin-bottom: 25px" class="input-group">
-                            <input type="text" th:field="*{firstName}" placeholder="First name (*)" class="form-control" />
+                            <input type="text" th:field="*{fullName}" placeholder="Full name (*)" class="form-control" />
                         </div>
 
-                        <div th:if="${#fields.hasErrors('firstName')}"
+                        <div th:if="${#fields.hasErrors('fullName')}"
                              style="margin-bottom: 25px" class="text-danger">
                             <ul>
-                                <li th:each="err : ${#fields.errors('firstName')}" th:text="'First name ' + ${err}" />
-                            </ul>
-                        </div>
-
-                        <!-- Last Name -->
-                        <div style="margin-bottom: 25px" class="input-group">
-                            <input type="text" th:field="*{lastName}" placeholder="Last name (*)" class="form-control" />
-                        </div>
-
-                        <div th:if="${#fields.hasErrors('lastName')}"
-                             style="margin-bottom: 25px" class="text-danger">
-                            <ul>
-                                <li th:each="err : ${#fields.errors('lastName')}" th:text="'Last name ' + ${err}" />
+                                <li th:each="err : ${#fields.errors('fullName')}" th:text="'Full name ' + ${err}" />
                             </ul>
                         </div>
 
