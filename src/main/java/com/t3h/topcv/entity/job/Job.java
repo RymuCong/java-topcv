@@ -1,9 +1,12 @@
 package com.t3h.topcv.entity.job;
 
+import com.t3h.topcv.entity.company.Address_Company;
+import com.t3h.topcv.entity.company.Company;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -38,5 +41,25 @@ public class Job {
 
     @Column(name = "status")
     private String status;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinColumn(name = "company_id")
+    private Company companyId;
+
+    @OneToMany( mappedBy = "job_id",cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    private List<Type_Jobs> typeJobs;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinColumn(name = "address_company_id")
+    private Address_Company addressCompanyId;
+
+    @OneToMany(mappedBy = "job", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    private List<Level_Job> levelJobId;
+
+    @OneToMany(mappedBy = "job_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    private List<Job_Candidates> jobCandidates;
+
+    @OneToMany(mappedBy = "job_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    private List <Salary_Jobs> salaryJobs;
 
 }

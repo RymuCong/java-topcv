@@ -1,27 +1,28 @@
 package com.t3h.topcv.entity.job;
 
-import com.t3h.topcv.entity.Salary;
+import com.t3h.topcv.entity.candidate.Skill;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
-@Table(name = "salary_jobs")
-public class Salary_Jobs {
+@Table(name = "level_job")
+public class Level_Job {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
     @Column(name = "name")
     private String name;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinColumn(name = "salary_id")
-    private Salary salary_id;
+    @OneToMany(mappedBy = "levelJobs", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    private List<Skill> skills;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "job_id")
-    private Job job_id;
+    private Job job;
 }
