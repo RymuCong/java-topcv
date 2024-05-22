@@ -1,6 +1,8 @@
 package com.t3h.topcv.entity.candidate;
 
 import com.t3h.topcv.entity.Account;
+import com.t3h.topcv.entity.job.Job;
+import com.t3h.topcv.entity.job.Job_Candidates;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -67,6 +69,9 @@ public class Candidate {
 
     @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL)
     private List<Experience> experiences;
+
+    @OneToMany(mappedBy = "candidate_id", cascade = CascadeType.ALL)
+    private List <Job_Candidates> jobCandidates;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id")

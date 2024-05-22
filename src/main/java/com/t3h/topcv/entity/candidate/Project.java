@@ -1,0 +1,40 @@
+package com.t3h.topcv.entity.candidate;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.util.Date;
+
+@Data
+@Entity
+@Table(name = "project")
+public class Project {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "link")
+    private String link;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "start_at")
+    private Date startAt;
+
+    @Column(name = "end_at")
+    private Date endAt;
+
+    @Column(name = "status")
+    private Integer status;
+
+    @ManyToOne
+    @JoinColumn(name = "candidate_id")
+    private Candidate candidateId;
+
+}
