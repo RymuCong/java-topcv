@@ -1,5 +1,6 @@
 package com.t3h.topcv.entity.candidate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -31,6 +32,7 @@ public class Experience {
     @Column(name = "status")
     private Integer status;
 
+    @JsonBackReference
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "candidate_id")
     private Candidate candidateId;

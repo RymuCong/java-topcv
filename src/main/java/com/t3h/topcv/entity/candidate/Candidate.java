@@ -1,5 +1,6 @@
 package com.t3h.topcv.entity.candidate;
 
+import com.fasterxml.jackson.annotation.*;
 import com.t3h.topcv.entity.Account;
 import com.t3h.topcv.entity.job.Job;
 import com.t3h.topcv.entity.job.Job_Candidates;
@@ -9,6 +10,7 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Data
 @Entity
 @Table(name = "candidate")
@@ -38,7 +40,7 @@ public class Candidate {
     private String gender;
 
     @Column(name = "status")
-    private String status;
+    private Integer status;
 
     @Column(name = "position")
     private String position;
@@ -73,8 +75,13 @@ public class Candidate {
     @OneToMany(mappedBy = "candidate_id", cascade = CascadeType.ALL)
     private List <Job_Candidates> jobCandidates;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "account_id")
     private Account account;
+
+    @JsonProperty("account_id")
+    public Long getAccountId() {
+        return account != null ? account.getId() : null;
+    }
 
 }
