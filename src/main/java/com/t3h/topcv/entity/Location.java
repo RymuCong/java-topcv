@@ -1,11 +1,14 @@
 package com.t3h.topcv.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.t3h.topcv.entity.company.Address_Company;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Data
 @Entity
 @Table(name = "location")

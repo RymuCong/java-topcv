@@ -1,5 +1,8 @@
 package com.t3h.topcv.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.t3h.topcv.entity.candidate.Candidate;
 import com.t3h.topcv.entity.company.Company;
 import jakarta.persistence.*;
@@ -7,6 +10,7 @@ import lombok.Data;
 
 import java.util.Collection;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Data
 @Entity
 @Table(name = "account")
@@ -32,10 +36,10 @@ public class Account {
     @Column(name = "email")
     private String email;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Candidate candidate;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Company company;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

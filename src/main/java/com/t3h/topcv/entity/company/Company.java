@@ -1,5 +1,8 @@
 package com.t3h.topcv.entity.company;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.t3h.topcv.entity.Account;
 import com.t3h.topcv.entity.Notification;
 import com.t3h.topcv.entity.job.Job;
@@ -9,6 +12,7 @@ import org.springframework.boot.autoconfigure.batch.BatchProperties;
 
 import java.util.List;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Data
 @Entity
 @Table(name = "company")
@@ -59,6 +63,8 @@ public class Company {
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "type_company_id")
     private Type_Company typeCompany;

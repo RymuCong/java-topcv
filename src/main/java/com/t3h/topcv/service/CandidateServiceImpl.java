@@ -108,7 +108,7 @@ public class CandidateServiceImpl implements CandidateService{
         Candidate candidate = candidateRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Candidate not found with id " + id));
 
-        candidate.setAccount(null);
+        candidate.getAccount().setCandidate(null);
 
         candidateRepository.delete(candidate);
     }

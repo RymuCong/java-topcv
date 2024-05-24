@@ -18,6 +18,6 @@ public class Type_Company {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "typeCompany", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @OneToMany(mappedBy = "typeCompany", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)
     private List<Company> companies;
 }

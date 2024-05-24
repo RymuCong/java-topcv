@@ -108,7 +108,7 @@ public class CandidateController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
-            candidateService.delete(candidate.getId());
+            candidateService.delete(id);
 
             return new ResponseEntity<>(HttpStatus.OK);
     }
