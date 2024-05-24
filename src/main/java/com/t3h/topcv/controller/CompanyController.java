@@ -1,8 +1,6 @@
 package com.t3h.topcv.controller;
 
 import com.t3h.topcv.entity.company.Company;
-import com.t3h.topcv.entity.company.Type_Company;
-import com.t3h.topcv.repository.AccountRepository;
 import com.t3h.topcv.service.CompanyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +13,8 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    private final AccountRepository accountRepo;
-
-    public CompanyController(CompanyService companyService, AccountRepository accountRepository) {
+    public CompanyController(CompanyService companyService) {
         this.companyService = companyService;
-        this.accountRepo = accountRepository;
     }
 
     @GetMapping("/companies")

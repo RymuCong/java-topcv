@@ -1,6 +1,5 @@
 package com.t3h.topcv.entity.company;
 
-import com.t3h.topcv.entity.Location;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -35,10 +34,6 @@ public class Address_Company {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "company_id")
     private Company companyId;
-
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinColumn(name = "location_id")
-    private Location location;
 
 //    @OneToMany(mappedBy = "addressId", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
 //    private List <Job> job;

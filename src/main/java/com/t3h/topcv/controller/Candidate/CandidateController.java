@@ -1,9 +1,9 @@
-package com.t3h.topcv.controller;
+package com.t3h.topcv.controller.Candidate;
 
 import com.t3h.topcv.entity.Account;
 import com.t3h.topcv.entity.candidate.Candidate;
 import com.t3h.topcv.repository.AccountRepository;
-import com.t3h.topcv.service.CandidateService;
+import com.t3h.topcv.service.Candidate.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

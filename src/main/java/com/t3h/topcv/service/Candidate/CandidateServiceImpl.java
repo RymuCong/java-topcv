@@ -1,10 +1,11 @@
-package com.t3h.topcv.service;
+package com.t3h.topcv.service.Candidate;
 
 import com.t3h.topcv.entity.Account;
 import com.t3h.topcv.entity.candidate.Candidate;
 import com.t3h.topcv.exception.ResourceNotFoundException;
 import com.t3h.topcv.repository.AccountRepository;
-import com.t3h.topcv.repository.CandidateRepository;
+import com.t3h.topcv.repository.Candidate.CandidateRepository;
+import com.t3h.topcv.service.Candidate.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class CandidateServiceImpl implements CandidateService{
+public class CandidateServiceImpl implements CandidateService {
     private final CandidateRepository candidateRepository;
 
     private final AccountRepository accountRepository;
