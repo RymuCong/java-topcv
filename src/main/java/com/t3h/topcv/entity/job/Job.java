@@ -1,5 +1,8 @@
 package com.t3h.topcv.entity.job;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.t3h.topcv.entity.company.Address_Company;
 import com.t3h.topcv.entity.company.Company;
 import jakarta.persistence.*;
@@ -7,6 +10,7 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Entity
@@ -24,10 +28,12 @@ public class Job {
     @Column(name = "salary")
     private String salary;
 
+    @Lob
     @Column(name = "description")
     private String description;
 
-    @Column(name = "requirement")
+    @Lob
+    @Column(name = "requirement", length = 10000)
     private String requirement;
 
     @Column(name = "expired_at")

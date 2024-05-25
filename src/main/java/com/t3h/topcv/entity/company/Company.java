@@ -8,7 +8,6 @@ import com.t3h.topcv.entity.Notification;
 import com.t3h.topcv.entity.job.Job;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.boot.autoconfigure.batch.BatchProperties;
 
 import java.util.List;
 
@@ -75,6 +74,8 @@ public class Company {
     @OneToMany(mappedBy = "companyId", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Address_Company> addressCompanies;
 
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @OneToMany(mappedBy = "companyId", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Job> jobs;
 }
