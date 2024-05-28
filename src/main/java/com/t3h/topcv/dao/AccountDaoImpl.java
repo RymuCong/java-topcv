@@ -18,13 +18,47 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
+	public Boolean existsByUserName(String userName) {
+
+		// check the database if the account already exists
+		TypedQuery<Account> theQuery = entityManager.createQuery("from Account where userName=:uName", Account.class);
+		theQuery.setParameter("uName", userName);
+
+		Account theAccount;
+		try {
+			theAccount = theQuery.getSingleResult();
+		} catch (Exception e) {
+			theAccount = null;
+		}
+
+		return theAccount != null;
+	}
+
+	@Override
+	public Boolean existsByEmail(String email) {
+
+		// check the database if the account already exists
+		TypedQuery<Account> theQuery = entityManager.createQuery("from Account where email=:uEmail", Account.class);
+		theQuery.setParameter("uEmail", email);
+
+		Account theAccount;
+		try {
+			theAccount = theQuery.getSingleResult();
+		} catch (Exception e) {
+			theAccount = null;
+		}
+
+		return theAccount != null;
+	}
+
+	@Override
 	public Account findByUserName(String theUserName) {
 
 		// retrieve/read from database using username
 		TypedQuery<Account> theQuery = entityManager.createQuery("from Account where userName=:uName and status=1", Account.class);
 		theQuery.setParameter("uName", theUserName);
 
-		Account theAccount = null;
+		Account theAccount;
 		try {
 			theAccount = theQuery.getSingleResult();
 		} catch (Exception e) {
@@ -38,7 +72,7 @@ public class AccountDaoImpl implements AccountDao {
 	@Transactional
 	public void save(Account theAccount) {
 
-		// create the account ... finally LOL
+		// save to database
 		entityManager.merge(theAccount);
 	}
 

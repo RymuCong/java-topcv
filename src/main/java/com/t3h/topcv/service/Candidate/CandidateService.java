@@ -24,4 +24,6 @@ public interface CandidateService {
     void save(Candidate candidate);
 
     void delete(Long id);
+
+    List<Candidate> getHomepageCandidate();
 }

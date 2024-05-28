@@ -1,5 +1,6 @@
 package com.t3h.topcv.controller;
 
+import com.t3h.topcv.dto.CompanyResponse;
 import com.t3h.topcv.entity.company.Company;
 import com.t3h.topcv.service.CompanyService;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 public class CompanyController {
 
@@ -17,10 +19,13 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-    @GetMapping("/companies")
+    @GetMapping("/companies/getAll")
     public ResponseEntity<?> getAllCompany() {
         List<Company> companies = companyService.findAll();
-        return new ResponseEntity<>(companies, HttpStatus.OK);
+        CompanyResponse response = new CompanyResponse();
+        response.setMessage("success");
+        response.setData(companies);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/companies/{id}")
