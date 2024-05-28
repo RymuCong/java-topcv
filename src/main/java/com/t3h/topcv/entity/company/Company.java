@@ -62,7 +62,7 @@ public class Company {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "type_company_id")

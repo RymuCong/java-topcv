@@ -3,6 +3,9 @@ package com.t3h.topcv.service;
 import com.t3h.topcv.entity.job.Job;
 import com.t3h.topcv.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,5 +103,28 @@ public class JobServiceImpl implements JobService{
 
         return jobRepository.save(jobTemp);
 
+    }
+
+    @Override
+    public List<Job> getHomepageJob() {
+        // get 6 job
+        return jobRepository.findTop6ByOrderByIdDesc();
+    }
+
+    @Override
+    public List<Job> getLiveJobs() {
+        return jobRepository.findAllByStatus("1");
+    }
+
+    @Override
+    public List<Job> getAllPageJob(int page) {
+        // Apply pagination: limit 6, offset based on page number
+        Pageable pageable = PageRequest.of(page-1, 6, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        // Execute the query
+        List<Job> result = jobRepository.findAll(pageable).toList();
+
+        // Return the result
+        return result;
     }
 }

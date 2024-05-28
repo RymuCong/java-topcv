@@ -10,4 +10,8 @@ import java.util.List;
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long> {
     List<Job> findAllByCompanyId(Company companyId);
+
+    List<Job> findTop6ByOrderByIdDesc();
+
+    List<Job> findAllByStatus(String status);
 }

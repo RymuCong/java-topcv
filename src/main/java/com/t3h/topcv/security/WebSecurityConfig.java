@@ -29,14 +29,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    private JwtAuthenticationFilter jwtAuthFilter;
+    private final JwtAuthenticationFilter jwtAuthFilter;
+
+    private List<String> permitAllEndpointList = Arrays.asList(
+            "/auth/login",
+            "/companies/getAll",
+            "/candidates/getAll",
+            "/jobs/getAllPaging",
+            "/jobs/firstPage",
+            "/jobs/getLiveJobs"
+    );
 
     @Autowired
     public WebSecurityConfig(@Lazy UserService accountService, JwtAuthenticationFilter jwtAuthFilter) {
@@ -77,10 +87,11 @@ public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
 
         http.authorizeHttpRequests(configurer ->
                         configurer
-//                                .requestMatchers("/").hasRole("EMPLOYEE")
-//                                .requestMatchers("/leaders/**").hasRole("MANAGER")
-//                                .requestMatchers("/systems/**").hasRole("ADMIN")
-                                .requestMatchers("candidates/**").permitAll()
+                                .requestMatchers(permitAllEndpointList.toArray(new String[0])).permitAll(
+                                )
+                                .requestMatchers("companies/**").hasRole("CANDIDATE")
+                                .requestMatchers("candidates/**").hasRole("CANDIDATE")
+                                .requestMatchers("jobs/**").hasRole("CANDIDATE")
                                 .requestMatchers("auth/**").permitAll()
                                 .anyRequest().authenticated()
                 )
@@ -97,7 +108,7 @@ public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
         // use HTTP Basic Authentication
         http.httpBasic(Customizer.withDefaults());
 
-        http.cors(AbstractHttpConfigurer::disable);
+        http.cors(Customizer.withDefaults());
 
         // disable Cross-Site Request Forgery (CSRF)
         http.csrf(AbstractHttpConfigurer::disable);

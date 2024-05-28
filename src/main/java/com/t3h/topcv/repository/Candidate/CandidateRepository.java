@@ -14,4 +14,6 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long>{
     List<Candidate> findAllByStatus(Integer status);
 
     List<Candidate> findAllByPosition(String position);
+
+    List<Candidate> findTop6ByOrderByCreatedAtDesc();
 }

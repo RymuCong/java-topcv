@@ -113,4 +113,10 @@ public class CandidateServiceImpl implements CandidateService {
 
         candidateRepository.delete(candidate);
     }
+
+    @Override
+    public List<Candidate> getHomepageCandidate() {
+        // top 6 candidate
+        return candidateRepository.findTop6ByOrderByCreatedAtDesc();
+    }
 }

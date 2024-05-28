@@ -25,4 +25,10 @@ public interface JobService {
     // update job
     Job updateJob(Long id, Job job);
 
+    // get homepage job
+    List<Job> getHomepageJob();
+
+    List<Job> getLiveJobs();
+
+    List<Job> getAllPageJob(int page);
 }

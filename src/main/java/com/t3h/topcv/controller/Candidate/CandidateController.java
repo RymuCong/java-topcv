@@ -1,5 +1,6 @@
 package com.t3h.topcv.controller.Candidate;
 
+import com.t3h.topcv.dto.CandidateResponse;
 import com.t3h.topcv.entity.Account;
 import com.t3h.topcv.entity.candidate.Candidate;
 import com.t3h.topcv.repository.AccountRepository;
@@ -30,7 +31,25 @@ public class CandidateController {
 
         List <Candidate> candidates = candidateService.findAllCandidates();
 
-        return new ResponseEntity<>(candidates, HttpStatus.OK);
+        CandidateResponse response = new CandidateResponse();
+
+        response.setMessage("success");
+        response.setData(candidates);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // get top 6 candidates
+    @GetMapping("/candidates/firstPage")
+    public ResponseEntity<?> getHomepageCandidate() {
+        List<Candidate> candidates = candidateService.getHomepageCandidate();
+
+        CandidateResponse response = new CandidateResponse();
+
+        response.setMessage("success");
+        response.setData(candidates);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/candidates/{id}")

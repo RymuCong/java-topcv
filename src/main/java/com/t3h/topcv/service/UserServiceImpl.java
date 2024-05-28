@@ -89,8 +89,26 @@ public class UserServiceImpl implements UserService {
 		AuthResponse response = new AuthResponse();
 		AuthResponse.Data data = new AuthResponse.Data();
 		data.setToken(token);
-		data.setRole(1); // set the role value
 		data.setStatus(1); // set the status value
+
+		// Set the role value based on the role name
+		for (Role role : user.getRoles()) {
+			switch (role.getName()) {
+				case "ROLE_CANDIDATE":
+					data.setRole(1);
+					break;
+				case "ROLE_COMPANY":
+					data.setRole(2);
+					break;
+				case "ROLE_ADMIN":
+					data.setRole(3);
+					break;
+				default:
+					// Handle unknown roles if necessary
+					break;
+			}
+		}
+
 		data.setToken_access(token); // set the token_access value
 		response.setData(data);
 		response.setMessage("Đăng nhập thành công");

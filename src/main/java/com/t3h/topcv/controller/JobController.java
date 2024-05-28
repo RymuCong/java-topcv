@@ -1,6 +1,8 @@
 package com.t3h.topcv.controller;
 
+import com.t3h.topcv.dto.JobResponse;
 import com.t3h.topcv.entity.job.Job;
+import com.t3h.topcv.repository.JobRepository;
 import com.t3h.topcv.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,40 @@ public class JobController {
         List<Job> jobs = jobService.getAllJob();
 
         return ResponseEntity.ok(jobs);
+    }
+
+    // get homepage job
+    @GetMapping("/jobs/firstPage")
+    public ResponseEntity<?> getHomepageJob() {
+        List<Job> jobs = jobService.getHomepageJob();
+
+        JobResponse response = new JobResponse();
+        response.setMessage("success");
+        response.setData(jobs);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/jobs/getLiveJobs")
+    public ResponseEntity<?> getLiveJobs() {
+        List<Job> jobs = jobService.getLiveJobs();
+
+        JobResponse response = new JobResponse();
+        response.setMessage("success");
+        response.setData(jobs);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/jobs/getAllPaging")
+    public ResponseEntity<?> getAllPageJob(@RequestParam(defaultValue = "0") int page) {
+        List<Job> jobs = jobService.getAllPageJob(page);
+
+        JobResponse response = new JobResponse();
+        response.setMessage("success");
+        response.setData(jobs);
+
+        return ResponseEntity.ok(response);
     }
 
     // get job by id
