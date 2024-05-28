@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 public class CandidateController {
 
@@ -24,7 +25,7 @@ public class CandidateController {
         this.accountRepo = accountRepository;
     }
 
-    @GetMapping("/candidates")
+    @GetMapping("/candidates/getAll")
     public ResponseEntity<?> getAllCandidate() {
 
         List <Candidate> candidates = candidateService.findAllCandidates();

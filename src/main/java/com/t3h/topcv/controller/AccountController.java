@@ -1,5 +1,7 @@
 package com.t3h.topcv.controller;
 
+import com.t3h.topcv.dao.RoleDaoImpl;
+import com.t3h.topcv.dto.AuthRequest;
 import com.t3h.topcv.entity.Account;
 import com.t3h.topcv.service.UserService;
 import com.t3h.topcv.user.WebUser;
@@ -8,24 +10,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.logging.Logger;
 
+@CrossOrigin("*")
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/auth")
 public class AccountController {
+
+//	@Autowired
+	private final AuthenticationManager authenticationManager;
 
 	private final Logger logger = Logger.getLogger(getClass().getName());
 
 	private final UserService userService;
 
+	RoleDaoImpl roleDao;
+
 	@Autowired
-	public AccountController(UserService userService) {
-		this.userService = userService;
-    }
+	PasswordEncoder encoder;
+
+	@Autowired
+	public AccountController(AuthenticationManager authenticationManager, UserService userService) {
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+	}
 
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
@@ -63,26 +77,10 @@ public class AccountController {
 		return new ResponseEntity<>(theWebUser, HttpStatus.CREATED);
 	}
 
-	@GetMapping("login")
-	public ResponseEntity<?> login(@RequestBody WebUser theWebUser) {
-		String userName = theWebUser.getUserName();
-		String password = theWebUser.getPassword();
-		logger.info("Processing login form for: " + userName);
-
-		// check the database if account already exists
-		Account existing = userService.findByUserName(userName);
-		if (existing == null) {
-			logger.warning("Account name not exists.");
-			return new ResponseEntity<>("Account name not exists.", HttpStatus.NOT_FOUND);
-		}
-		if (!existing.getPassword().equals(password)) {
-			logger.warning("Password is incorrect.");
-			return new ResponseEntity<>("Password is incorrect.", HttpStatus.UNAUTHORIZED);
-		}
-
-		logger.info("Successfully login account: " + userName);
-
-		return new ResponseEntity<>(theWebUser, HttpStatus.OK);
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
+		System.out.println("AuthRequest: " + authRequest);
+		return ResponseEntity.ok(userService.login(authRequest));
 	}
 
 	@GetMapping("logout")

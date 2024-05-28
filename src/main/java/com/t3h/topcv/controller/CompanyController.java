@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 public class CompanyController {
 
@@ -17,7 +18,7 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-    @GetMapping("/companies")
+    @GetMapping("/companies/getAll")
     public ResponseEntity<?> getAllCompany() {
         List<Company> companies = companyService.findAll();
         return new ResponseEntity<>(companies, HttpStatus.OK);

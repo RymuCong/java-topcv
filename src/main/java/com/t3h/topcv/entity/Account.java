@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.t3h.topcv.entity.candidate.Candidate;
 import com.t3h.topcv.entity.company.Company;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.Collection;
@@ -13,7 +15,11 @@ import java.util.Collection;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Data
 @Entity
-@Table(name = "account")
+@Table(name = "account",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "username"),
+                @UniqueConstraint(columnNames = "email")
+        })
 public class Account {
 
     @Id
@@ -21,9 +27,13 @@ public class Account {
     @Column(name = "id")
     private Long id;
 
+    @NotBlank
+    @Size(max = 20)
     @Column(name = "username")
     private String userName;
 
+    @NotBlank
+    @Size(max = 120)
     @Column(name = "password")
     private String password;
 
@@ -33,6 +43,8 @@ public class Account {
     @Column(name = "full_name")
     private String fullName;
 
+    @NotBlank
+    @Size(max = 50)
     @Column(name = "email")
     private String email;
 

@@ -28,4 +28,5 @@ public class WebUser {
 
 	private Integer status = 1;
 
+	private String confirmPassword;
 }
