@@ -1,7 +1,18 @@
 package com.t3h.topcv.service;
 
-import com.t3h.topcv.entity.job.Job;
-import com.t3h.topcv.repository.JobRepository;
+import com.t3h.topcv.dto.ApplyJobResponse;
+import com.t3h.topcv.entity.Salary;
+import com.t3h.topcv.entity.candidate.Candidate;
+import com.t3h.topcv.entity.company.Address_Company;
+import com.t3h.topcv.entity.company.Company;
+import com.t3h.topcv.entity.job.*;
+import com.t3h.topcv.repository.Job.JobCandidateRepository;
+import com.t3h.topcv.repository.Job.JobRepository;
+import com.t3h.topcv.service.Candidate.CandidateService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -9,20 +20,29 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
 public class JobServiceImpl implements JobService{
 
+    @PersistenceContext
+    private EntityManager entityManager;
     private final JobRepository jobRepository;
 
     private final CompanyService companyService;
 
+    private final CandidateService candidateService;
+
+    private final JobCandidateRepository jobCandidatesRepository;
+
     @Autowired
-    public JobServiceImpl(JobRepository jobRepository, CompanyService companyService) {
+    public JobServiceImpl(JobRepository jobRepository, CompanyService companyService, CandidateService candidateService, JobCandidateRepository jobCandidatesRepository) {
         this.jobRepository = jobRepository;
         this.companyService = companyService;
+        this.candidateService = candidateService;
+        this.jobCandidatesRepository = jobCandidatesRepository;
     }
 
     @Override
@@ -127,4 +147,85 @@ public class JobServiceImpl implements JobService{
         // Return the result
         return result;
     }
+
+    @Override
+    public List<Job> searchJob(String name, String location, String leveljob, String salary) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Job> cq = cb.createQuery(Job.class);
+
+        Root<Job> job = cq.from(Job.class);
+        Join<Job, Company> company = job.join("companyId", JoinType.LEFT);
+        Join<Job, Type_Jobs> types_jobs = job.join("typeJobs", JoinType.LEFT);
+        Join<Type_Jobs, Field_Job> field_jobs = types_jobs.join("fieldJobs", JoinType.LEFT);
+        Join<Job, Level_Job_Detail> level_job_detail = job.join("levelJobId", JoinType.LEFT);
+        Join<Level_Job_Detail, Level_Job> level_job = level_job_detail.join("levelJobs", JoinType.LEFT);
+        Join<Job, Address_Company> address_company = job.join("addressCompanyId", JoinType.LEFT);
+        Join<Job, Salary_Jobs> salary_jobs = job.join("salaryJobs", JoinType.LEFT);
+        Join<Salary_Jobs, Salary> salaryJoin = salary_jobs.join("salary_id", JoinType.LEFT);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.like(job.get("title"), "%" + name + "%"));
+
+        if (location != null && !location.isEmpty()) {
+            predicates.add(cb.like(address_company.get("address"), "%" + location + "%"));
+        }
+
+        if (salary != null && !salary.isEmpty()) {
+            Long salaryId = Long.parseLong(salary);
+            predicates.add(cb.equal(salaryJoin.get("id"), salaryId));
+        }
+
+        if (leveljob != null && !leveljob.isEmpty()) {
+            Long levelJobId = Long.parseLong(leveljob);
+            predicates.add(cb.equal(level_job.get("id"), levelJobId));
+        }
+
+        cq.where(predicates.toArray(new Predicate[0]));
+
+        TypedQuery<Job> query = entityManager.createQuery(cq);
+        return query.getResultList();
+    }
+
+    @Transactional
+    @Override
+    public Job_Candidates applyJob(ApplyJobResponse applyJobResponse) {
+
+        Job_Candidates jobCandidates = new Job_Candidates();
+
+        Candidate candidate = candidateService.findCandidateById(applyJobResponse.getCandidate_id());
+        Job job = jobRepository.findById(applyJobResponse.getJob_id()).orElse(null);
+
+        if (candidate == null || job == null) {
+            return null; // or throw an exception
+        }
+
+        jobCandidates.setCandidate_id(candidate);
+        jobCandidates.setJob_id(job);
+        jobCandidates.setContent(applyJobResponse.getContent());
+        jobCandidates.setCv_url(applyJobResponse.getCv_url());
+
+        jobCandidatesRepository.save(jobCandidates);
+
+        return jobCandidates;
+    }
+
+//    @Override
+//    public void applyJob(Long jobId, Long candidateId) {
+//        Job job = jobRepository.findById(jobId).orElse(null);
+//        Candidate candidate = candidateService.findCandidateById(candidateId);
+//        if (job == null || candidate == null) {
+//            return;
+//        }
+//
+//        Job_Candidates jobCandidates = new Job_Candidates();
+//        jobCandidates.setJob_id(job);
+//        jobCandidates.setCandidate_id(candidate);
+//
+//        job.getJobCandidates().add(jobCandidates);
+//        candidate.getJobCandidates().add(jobCandidates);
+//
+//        jobRepository.save(job);
+//        candidateService.save(candidate);
+//    }
+
 }

@@ -2,6 +2,7 @@ package com.t3h.topcv.entity.job;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.t3h.topcv.entity.company.Address_Company;
 import com.t3h.topcv.entity.company.Company;
@@ -48,6 +49,8 @@ public class Job {
     @Column(name = "status")
     private String status;
 
+//    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "company_id")
     private Company companyId;
@@ -60,11 +63,13 @@ public class Job {
     private Address_Company addressCompanyId;
 
     @OneToMany(mappedBy = "job", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    private List<Level_Job> levelJobId;
+    private List<Level_Job_Detail> levelJobId;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "job_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Job_Candidates> jobCandidates;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "job_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List <Salary_Jobs> salaryJobs;
 
