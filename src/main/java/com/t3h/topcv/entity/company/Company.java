@@ -2,6 +2,7 @@ package com.t3h.topcv.entity.company;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.t3h.topcv.entity.Account;
 import com.t3h.topcv.entity.Notification;
@@ -58,6 +59,8 @@ public class Company {
     @Column(name = "updated_at")
     private String updatedAt;
 
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "account_id")
     private Account account;
@@ -71,6 +74,7 @@ public class Company {
     @OneToMany(mappedBy = "companyId", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Notification> notifications;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "companyId", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Address_Company> addressCompanies;
 

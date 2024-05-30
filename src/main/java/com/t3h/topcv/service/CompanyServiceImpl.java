@@ -104,6 +104,11 @@ public class CompanyServiceImpl implements CompanyService{
         return companyRepo.findBySizeLessThanEqual(size);
     }
 
+    @Override
+    public List<Company> findByEmail(String email) {
+        return companyRepo.findByEmail(email);
+    }
+
 //    @Override
 //    public List<Company> findByTypeCompany(String typeCompany) {
 //        return companyRepo.findByTypeCompany(typeCompany);

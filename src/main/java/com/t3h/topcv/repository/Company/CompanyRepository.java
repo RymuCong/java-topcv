@@ -14,6 +14,8 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     List<Company> findBySizeLessThanEqual(Integer size);
 
+    List<Company> findByEmail(String email);
+
 //    List<Company> findByTypeCompany(Type_Company typeCompany);
 
 //    List<Company> findByJobs(String job);

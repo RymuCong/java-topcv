@@ -21,6 +21,8 @@ public interface CompanyService {
 
     List <Company> findBySize(Integer size);
 
+    List <Company> findByEmail(String email);
+
 //    List <Company> findByTypeCompany(String typeCompany);
 //
 //    List <Company> findByJobs(String jobs);

@@ -34,6 +34,21 @@ public class CompanyController {
         return new ResponseEntity<>(company, HttpStatus.OK);
     }
 
+    @GetMapping("/companies/getInfor")
+    public ResponseEntity<?> getCompanyInfor(String email) {
+        List <Company> company = companyService.findByEmail(email);
+
+        if (company == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        CompanyResponse response = new CompanyResponse();
+        response.setMessage("success");
+        response.setData(company);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping("/companies/account/{accountId}")
     public ResponseEntity<?> getCompanyByAccountId(@PathVariable Long accountId) {
         Company company = companyService.findByAccountId(accountId);
