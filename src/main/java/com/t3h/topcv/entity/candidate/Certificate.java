@@ -23,10 +23,10 @@ public class Certificate {
     private String description;
 
     @Column(name = "start_at")
-    private Date startAt;
+    private String startAt;
 
     @Column(name = "end_at")
-    private Date endAt;
+    private String endAt;
 
     @Column(name = "organization")
     private String organization;

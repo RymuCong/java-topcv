@@ -23,10 +23,10 @@ public class Education {
     private String major;
 
     @Column(name = "start_at")
-    private Date startAt;
+    private String startAt;
 
     @Column(name = "end_at")
-    private Date endAt;
+    private String endAt;
 
     @Column(name = "status")
     private Integer status;

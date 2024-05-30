@@ -63,17 +63,28 @@ public class Candidate {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL)
+    @Lob
+    @Column(name = "about_me")
+    private String aboutMe;
+
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Certificate> certificates;
 
-    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Education> educations;
 
-    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Experience> experiences;
 
-    @OneToMany(mappedBy = "candidate_id", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "candidate_id", cascade = CascadeType.ALL, orphanRemoval = true)
     private List <Job_Candidates> jobCandidates;
+
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Project> projects;
+
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Skill> skills;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "account_id")

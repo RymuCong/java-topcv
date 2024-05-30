@@ -1,6 +1,6 @@
 package com.t3h.topcv.dto;
 
-import lombok.AllArgsConstructor;
+import com.t3h.topcv.entity.job.Job_Candidates;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,5 +27,13 @@ public class AuthResponse {
         private String token;
 
         // getters and setters
+    }
+
+    @lombok.Data
+    public static class JobCandidateResponse {
+
+        private String message;
+
+        private List<Job_Candidates> data;
     }
 }

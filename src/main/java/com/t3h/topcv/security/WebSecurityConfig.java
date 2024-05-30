@@ -45,7 +45,11 @@ public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
             "/candidates/getAll",
             "/jobs/getAllPaging",
             "/jobs/firstPage",
-            "/jobs/getLiveJobs"
+            "/jobs/getLiveJobs",
+            "/jobs/getAll",
+            "/salary/getAll",
+            "search/**", "jobs/searchJob",
+            "/jobs/leveljob/getAll"
     );
 
     @Autowired
@@ -92,6 +96,7 @@ public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
                                 .requestMatchers("companies/**").hasRole("CANDIDATE")
                                 .requestMatchers("candidates/**").hasRole("CANDIDATE")
                                 .requestMatchers("jobs/**").hasRole("CANDIDATE")
+                                .requestMatchers("salary/**").hasRole("CANDIDATE")
                                 .requestMatchers("auth/**").permitAll()
                                 .anyRequest().authenticated()
                 )
