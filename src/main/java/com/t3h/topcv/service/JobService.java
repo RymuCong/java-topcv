@@ -4,6 +4,7 @@ import com.t3h.topcv.dto.ApplyJobResponse;
 import com.t3h.topcv.entity.job.Job;
 import com.t3h.topcv.entity.job.Job_Candidates;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface JobService {
@@ -37,4 +38,6 @@ public interface JobService {
     List<Job> searchJob(String name, String location, String leveljob, String salary);
 
     Job_Candidates applyJob(ApplyJobResponse applyJobResponse);
+
+    List<Job_Candidates> getJobAppliedCandidates(String username);
 }

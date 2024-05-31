@@ -76,7 +76,7 @@ public class Candidate {
     @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Experience> experiences;
 
-    @JsonManagedReference
+    @JsonBackReference
     @OneToMany(mappedBy = "candidate_id", cascade = CascadeType.ALL, orphanRemoval = true)
     private List <Job_Candidates> jobCandidates;
 

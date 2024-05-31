@@ -1,13 +1,13 @@
 package com.t3h.topcv.controller.Job;
 
-import com.t3h.topcv.dto.ApplyJobResponse;
-import com.t3h.topcv.dto.JobResponse;
-import com.t3h.topcv.dto.SingleResponse;
+import com.t3h.topcv.dto.*;
 import com.t3h.topcv.entity.job.Job;
 import com.t3h.topcv.entity.job.Job_Candidates;
 import com.t3h.topcv.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
@@ -165,6 +165,20 @@ public class JobController {
             Job_Candidates result = jobService.applyJob(applyJobDto);
             result.setStatus("1");
             return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/jobs/getJobAppliedCandidates")
+    public ResponseEntity<?> getJobAppliedCandidates(@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            List<Job_Candidates> result = jobService.getJobAppliedCandidates(userDetails.getUsername());
+
+            JobCandidateResponse response = new JobCandidateResponse();
+            response.setMessage("success");
+            response.setData(result);
+            return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }

@@ -2,6 +2,7 @@ package com.t3h.topcv.entity.job;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.t3h.topcv.entity.candidate.Candidate;
 import jakarta.persistence.*;
@@ -29,12 +30,12 @@ public class Job_Candidates {
     @Column(name = "content")
     private String content;
 
-    @JsonBackReference
+    @JsonManagedReference
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "job_id")
     private Job job_id;
 
-    @JsonBackReference
+    @JsonManagedReference
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "candidate_id")
     private Candidate candidate_id;

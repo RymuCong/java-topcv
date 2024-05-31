@@ -1,5 +1,6 @@
 package com.t3h.topcv.entity.job;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class Field_Job {
     @Column(name = "name")
     private String name;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "type_jobs_id")
     private Type_Jobs typeJobs;

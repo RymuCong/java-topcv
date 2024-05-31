@@ -28,12 +28,4 @@ public class AuthResponse {
 
         // getters and setters
     }
-
-    @lombok.Data
-    public static class JobCandidateResponse {
-
-        private String message;
-
-        private List<Job_Candidates> data;
-    }
 }

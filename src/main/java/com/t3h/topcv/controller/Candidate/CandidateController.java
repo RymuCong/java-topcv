@@ -69,7 +69,7 @@ public class CandidateController {
         try {
             String username = principal.getName();
             List<Job_Candidates> result = candidateService.getJobSaveCandidate(username);
-            AuthResponse.JobCandidateResponse response = new AuthResponse.JobCandidateResponse();
+            JobCandidateResponse response = new JobCandidateResponse();
             response.setMessage("success");
             response.setData(result);
             return new ResponseEntity<>(response, HttpStatus.OK);

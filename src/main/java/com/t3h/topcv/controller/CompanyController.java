@@ -1,6 +1,7 @@
 package com.t3h.topcv.controller;
 
 import com.t3h.topcv.dto.CompanyResponse;
+import com.t3h.topcv.dto.SingleResponse;
 import com.t3h.topcv.entity.company.Company;
 import com.t3h.topcv.service.CompanyService;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,20 @@ public class CompanyController {
         }
 
         CompanyResponse response = new CompanyResponse();
+        response.setMessage("success");
+        response.setData(company);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+   @GetMapping("/companies/getInfoCompanyById/{id}")
+    public ResponseEntity<?> getCompanyInfoById(@PathVariable Long id) {
+        Company company = companyService.findById(id);
+
+        if (company == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        SingleResponse response = new SingleResponse();
         response.setMessage("success");
         response.setData(company);
 

@@ -1,6 +1,7 @@
 package com.t3h.topcv.service;
 
 import com.t3h.topcv.dto.ApplyJobResponse;
+import com.t3h.topcv.entity.Account;
 import com.t3h.topcv.entity.Salary;
 import com.t3h.topcv.entity.candidate.Candidate;
 import com.t3h.topcv.entity.company.Address_Company;
@@ -207,6 +208,32 @@ public class JobServiceImpl implements JobService{
         jobCandidatesRepository.save(jobCandidates);
 
         return jobCandidates;
+    }
+
+
+    @Override
+    public List<Job_Candidates> getJobAppliedCandidates(String username) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Job_Candidates> cq = cb.createQuery(Job_Candidates.class);
+
+        Root<Job_Candidates> jobCandidates = cq.from(Job_Candidates.class);
+        Join<Job_Candidates, Job> job = jobCandidates.join("job_id", JoinType.INNER);
+        Join<Job_Candidates, Candidate> candidate = jobCandidates.join("candidate_id", JoinType.INNER);
+        Join<Candidate, Account> account = candidate.join("account", JoinType.INNER);
+        Join<Job, Company> company = job.join("companyId", JoinType.LEFT);
+        Join<Job, Type_Jobs> types_jobs = job.join("typeJobs", JoinType.LEFT);
+        Join<Type_Jobs, Field_Job> field_jobs = types_jobs.join("fieldJobs", JoinType.LEFT);
+        Join<Job, Level_Job_Detail> level_job_detail = job.join("levelJobId", JoinType.LEFT);
+        Join<Level_Job_Detail, Level_Job> level_job = level_job_detail.join("levelJobs", JoinType.LEFT);
+        Join<Job, Address_Company> address_company = job.join("addressCompanyId", JoinType.LEFT);
+        Join<Job, Salary_Jobs> salary_jobs = job.join("salaryJobs", JoinType.LEFT);
+        Join<Salary_Jobs, Salary> salaryJoin = salary_jobs.join("salary_id", JoinType.LEFT);
+
+        Predicate usernamePredicate = cb.equal(account.get("userName"), username);
+        cq.where(usernamePredicate);
+
+        TypedQuery<Job_Candidates> query = entityManager.createQuery(cq);
+        return query.getResultList();
     }
 
 //    @Override
