@@ -23,6 +23,8 @@ public interface CompanyService {
 
     List <Company> findByEmail(String email);
 
+    void updateInfo(Company companyTemp, Long id);
+
 //    List <Company> findByTypeCompany(String typeCompany);
 //
 //    List <Company> findByJobs(String jobs);

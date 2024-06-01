@@ -1,14 +1,22 @@
-package com.t3h.topcv.controller;
+package com.t3h.topcv.controller.Company;
 
+import com.t3h.topcv.dto.CompanyRequest;
 import com.t3h.topcv.dto.CompanyResponse;
 import com.t3h.topcv.dto.SingleResponse;
 import com.t3h.topcv.entity.company.Company;
+import com.t3h.topcv.repository.AccountRepository;
+import com.t3h.topcv.repository.Company.TypeCompanyRepository;
 import com.t3h.topcv.service.CompanyService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
@@ -16,8 +24,15 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    public CompanyController(CompanyService companyService) {
+    private final AccountRepository accountRepo;
+
+    private final TypeCompanyRepository typeCompanyRepo;
+
+    @Autowired
+    public CompanyController(CompanyService companyService, AccountRepository accountRepo, TypeCompanyRepository typeCompanyRepo) {
         this.companyService = companyService;
+        this.accountRepo = accountRepo;
+        this.typeCompanyRepo = typeCompanyRepo;
     }
 
     @GetMapping("/companies/getAll")
@@ -36,14 +51,14 @@ public class CompanyController {
     }
 
     @GetMapping("/companies/getInfor")
-    public ResponseEntity<?> getCompanyInfor(String email) {
-        List <Company> company = companyService.findByEmail(email);
+    public ResponseEntity<?> getCompanyInfor(@AuthenticationPrincipal UserDetails userDetails) {
+        Company company = companyService.findByAccountId(accountRepo.findByUserName(userDetails.getUsername()).getId());
 
         if (company == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        CompanyResponse response = new CompanyResponse();
+        SingleResponse response = new SingleResponse();
         response.setMessage("success");
         response.setData(company);
 
@@ -122,4 +137,34 @@ public class CompanyController {
         companyService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PatchMapping("/companies/update-info/{id}")
+    public ResponseEntity<?> updateCompanyInfo(@PathVariable Long id ,@RequestBody Map<String, String> company) {
+
+        Company companyTemp = companyService.findById(id);
+
+        if (companyTemp == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        companyTemp.setPhone(company.get("phone"));
+        companyTemp.setWebsite(company.get("website"));
+        companyTemp.setUpdatedAt(new Date().toString());
+        companyTemp.setLogo(company.get("photo"));
+        companyTemp.setDescription(company.get("description"));
+        companyTemp.setLinkFacebook(company.get("link_facebook"));
+        companyTemp.setPolicy(company.get("policy"));
+        companyTemp.setEmail(company.get("email"));
+        companyTemp.setSize(Integer.valueOf(company.get("size")));
+        companyTemp.setTypeCompany(typeCompanyRepo.findById(Long.valueOf(company.get("typeCompany_id"))).orElse(null));
+
+        companyService.updateInfo(companyTemp, id);
+
+        SingleResponse response = new SingleResponse();
+        response.setMessage("Update company info successfully");
+        response.setData(companyTemp);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

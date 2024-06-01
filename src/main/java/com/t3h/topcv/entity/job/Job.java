@@ -52,24 +52,23 @@ public class Job {
     @JoinColumn(name = "company_id")
     private Company companyId;
 
-    @JsonManagedReference
+    @JsonManagedReference(value = "typeJobs")
     @OneToMany( mappedBy = "job_id",cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Type_Jobs> typeJobs;
 
-    @JsonManagedReference
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "address_company_id")
     private Address_Company addressCompanyId;
 
-    @JsonManagedReference
+    @JsonManagedReference(value = "levelJobDetails")
     @OneToMany(mappedBy = "job", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Level_Job_Detail> levelJobId;
 
-    @JsonBackReference
+    @JsonManagedReference(value = "jobCandidates1")
     @OneToMany(mappedBy = "job_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Job_Candidates> jobCandidates;
 
-    @JsonManagedReference
+    @JsonManagedReference(value = "jobSalary")
     @OneToMany(mappedBy = "job_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List <Salary_Jobs> salaryJobs;
 

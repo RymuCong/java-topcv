@@ -109,6 +109,27 @@ public class CompanyServiceImpl implements CompanyService{
         return companyRepo.findByEmail(email);
     }
 
+    @Transactional
+    @Override
+    public void updateInfo(Company companyTemp, Long id) {
+
+        Company company = companyRepo.findById(id).orElseThrow(() -> new RuntimeException("Company not found with id " + id));
+
+        companyTemp.setUpdatedAt(new Date().toString());
+        companyTemp.setPolicy(company.getPolicy());
+        companyTemp.setLinkFacebook(company.getLinkFacebook());
+        companyTemp.setName(company.getName());
+        companyTemp.setWebsite(company.getWebsite());
+        companyTemp.setPhone(company.getPhone());
+        companyTemp.setSize(company.getSize());
+        companyTemp.setEmail(company.getEmail());
+        companyTemp.setTypeCompany(company.getTypeCompany());
+        companyTemp.setDescription(company.getDescription());
+        companyTemp.setLogo(company.getLogo());
+
+        companyRepo.save(companyTemp);
+    }
+
 //    @Override
 //    public List<Company> findByTypeCompany(String typeCompany) {
 //        return companyRepo.findByTypeCompany(typeCompany);

@@ -183,4 +183,18 @@ public class JobController {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
+
+    @GetMapping("/jobs/getJobsForCompany")
+    public ResponseEntity<?> getJobsForCompany(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(defaultValue = "1") String status) {
+        try {
+            List<Job> result = jobService.getJobsForCompany(userDetails.getUsername(), status);
+
+            JobResponse response = new JobResponse();
+            response.setMessage("success");
+            response.setData(result);
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
 }

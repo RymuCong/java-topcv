@@ -20,11 +20,11 @@ public class Type_Jobs {
     @Column(name = "name")
     private String name;
 
-    @JsonManagedReference
+    @JsonManagedReference(value = "fieldJobs")
     @OneToMany(mappedBy = "typeJobs", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Field_Job> fieldJobs;
 
-    @JsonBackReference
+    @JsonBackReference(value = "typeJobs")
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "job_id")
     private Job job_id;

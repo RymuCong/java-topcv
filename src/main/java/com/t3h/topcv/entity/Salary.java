@@ -25,7 +25,7 @@ public class Salary {
 //    @JoinColumn(name = "job_id")
 //    private Job job_id;
 
-    @JsonManagedReference
+    @JsonManagedReference(value = "salary")
     @OneToMany(mappedBy = "salary_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Salary_Jobs> salary_jobs;
 }

@@ -236,23 +236,38 @@ public class JobServiceImpl implements JobService{
         return query.getResultList();
     }
 
-//    @Override
-//    public void applyJob(Long jobId, Long candidateId) {
-//        Job job = jobRepository.findById(jobId).orElse(null);
-//        Candidate candidate = candidateService.findCandidateById(candidateId);
-//        if (job == null || candidate == null) {
-//            return;
-//        }
-//
-//        Job_Candidates jobCandidates = new Job_Candidates();
-//        jobCandidates.setJob_id(job);
-//        jobCandidates.setCandidate_id(candidate);
-//
-//        job.getJobCandidates().add(jobCandidates);
-//        candidate.getJobCandidates().add(jobCandidates);
-//
-//        jobRepository.save(job);
-//        candidateService.save(candidate);
-//    }
+    @Override
+    public List<Job> getJobsForCompany(String userName, String status) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Job> cq = cb.createQuery(Job.class);
 
+        Root<Job> job = cq.from(Job.class);
+        Join<Job, Company> company = job.join("companyId", JoinType.LEFT);
+        Join<Company, Account> account = company.join("account", JoinType.LEFT);
+        Join<Job, Address_Company> address_company = job.join("addressCompanyId", JoinType.LEFT);
+        Join<Job, Type_Jobs> types_jobs = job.join("typeJobs", JoinType.LEFT);
+        Join<Type_Jobs, Field_Job> field_jobs = types_jobs.join("fieldJobs", JoinType.LEFT);
+        Join<Job, Level_Job_Detail> level_job_detail = job.join("levelJobId", JoinType.LEFT);
+        Join<Level_Job_Detail, Level_Job> level_job = level_job_detail.join("levelJobs", JoinType.LEFT);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(account.get("userName"), userName));
+
+        if ("1".equals(status)) {
+            predicates.add(cb.equal(job.get("status"), 1));
+        } else if ("0".equals(status)) {
+            predicates.add(cb.equal(job.get("status"), 0));
+        }
+//        } else if ("2".equals(status)) {
+//            // No additional predicate needed
+//        } else if (key != null && !key.isEmpty()) {
+//            predicates.add(cb.like(job.get("title"), "%" + key + "%"));
+//        }
+
+        cq.where(predicates.toArray(new Predicate[0]));
+        cq.orderBy(cb.desc(job.get("createdAt")));
+
+        TypedQuery<Job> query = entityManager.createQuery(cq);
+        return query.getResultList();
+    }
 }

@@ -40,4 +40,6 @@ public interface JobService {
     Job_Candidates applyJob(ApplyJobResponse applyJobResponse);
 
     List<Job_Candidates> getJobAppliedCandidates(String username);
+
+    List<Job> getJobsForCompany(String username, String status);
 }

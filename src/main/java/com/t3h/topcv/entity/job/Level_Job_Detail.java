@@ -14,7 +14,7 @@ public class Level_Job_Detail {
     @Column(name = "id")
     private Integer id;
 
-    @JsonBackReference
+    @JsonBackReference(value = "levelJobDetails")
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "job_id")
     private Job job;

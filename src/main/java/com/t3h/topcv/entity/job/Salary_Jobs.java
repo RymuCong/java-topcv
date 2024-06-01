@@ -17,12 +17,12 @@ public class Salary_Jobs {
     @Column(name = "id")
     private Long id;
 
-    @JsonBackReference
+    @JsonBackReference(value = "salary")
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "salary_id")
     private Salary salary_id;
 
-    @JsonBackReference
+    @JsonBackReference(value = "jobSalary")
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "job_id")
     private Job job_id;

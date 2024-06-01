@@ -17,7 +17,7 @@ public class Field_Job {
     @Column(name = "name")
     private String name;
 
-    @JsonBackReference
+    @JsonBackReference(value = "fieldJobs")
     @ManyToOne
     @JoinColumn(name = "type_jobs_id")
     private Type_Jobs typeJobs;

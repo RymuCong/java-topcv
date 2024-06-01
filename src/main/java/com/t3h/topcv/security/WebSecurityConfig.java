@@ -93,10 +93,11 @@ public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
                         configurer
                                 .requestMatchers(permitAllEndpointList.toArray(new String[0])).permitAll(
                                 )
-                                .requestMatchers("companies/**").hasRole("CANDIDATE")
-                                .requestMatchers("candidates/**").hasRole("CANDIDATE")
-                                .requestMatchers("jobs/**").hasRole("CANDIDATE")
-                                .requestMatchers("salary/**").hasRole("CANDIDATE")
+                                .requestMatchers("companies/**").hasAnyRole("CANDIDATE", "COMPANY")
+                                .requestMatchers("candidates/**").hasAnyRole("CANDIDATE", "COMPANY")
+                                .requestMatchers("jobs/**").hasAnyRole("CANDIDATE", "COMPANY")
+                                .requestMatchers("salary/**").hasAnyRole("CANDIDATE", "COMPANY")
+                                .requestMatchers("typeCompany/**").hasRole("COMPANY")
                                 .requestMatchers("auth/**").permitAll()
                                 .anyRequest().authenticated()
                 )

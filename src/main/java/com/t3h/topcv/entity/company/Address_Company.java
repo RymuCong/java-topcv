@@ -32,7 +32,7 @@ public class Address_Company {
     @Column(name = "updated_at")
     private String updatedAt;
 
-    @JsonBackReference
+    @JsonBackReference(value = "company-address")
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "company_id")
     private Company companyId;

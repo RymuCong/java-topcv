@@ -93,8 +93,8 @@ public class CandidateController {
     @PatchMapping("/candidates/updateInfoCandidate")
     public ResponseEntity<?> updateInfoCandidate(@RequestBody Map<String, String> body, @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            String email = userDetails.getUsername();
-            Candidate candidate = candidateService.findCandidateByAccount(accountRepo.findByUserName(email).getId());
+            String userName = userDetails.getUsername();
+            Candidate candidate = candidateService.findCandidateByAccount(accountRepo.findByUserName(userName).getId());
             candidate.setName(body.get("name"));
             candidate.setPhone(body.get("phone"));
             candidate.setAddress(body.get("address"));
@@ -105,7 +105,7 @@ public class CandidateController {
             candidate.setUpdatedAt(new Date());
             candidate.setAvatar(body.get("avatar"));
 
-            candidateService.updateCandidate(candidate,email);
+            candidateService.updateCandidate(candidate,userName);
             return ResponseEntity.ok().body("Cập nhật thành công");
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());

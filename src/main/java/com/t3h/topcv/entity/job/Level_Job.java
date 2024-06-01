@@ -2,6 +2,7 @@ package com.t3h.topcv.entity.job;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.t3h.topcv.entity.candidate.Skill;
 import jakarta.persistence.*;
@@ -22,7 +23,7 @@ public class Level_Job {
     @Column(name = "name")
     private String name;
 
-    @JsonBackReference
+    @JsonManagedReference(value = "skillLevelJob")
     @OneToMany(mappedBy = "levelJobs", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private List<Skill> skills;
 

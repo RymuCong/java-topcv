@@ -30,12 +30,12 @@ public class Job_Candidates {
     @Column(name = "content")
     private String content;
 
-    @JsonManagedReference
+    @JsonBackReference(value = "jobCandidates1")
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "job_id")
     private Job job_id;
 
-    @JsonManagedReference
+    @JsonBackReference(value = "jobCandidates2")
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "candidate_id")
     private Candidate candidate_id;
