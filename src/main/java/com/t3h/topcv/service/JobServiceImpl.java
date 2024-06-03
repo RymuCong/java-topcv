@@ -7,8 +7,7 @@ import com.t3h.topcv.entity.candidate.Candidate;
 import com.t3h.topcv.entity.company.Address_Company;
 import com.t3h.topcv.entity.company.Company;
 import com.t3h.topcv.entity.job.*;
-import com.t3h.topcv.repository.Job.JobCandidateRepository;
-import com.t3h.topcv.repository.Job.JobRepository;
+import com.t3h.topcv.repository.Job.*;
 import com.t3h.topcv.service.Candidate.CandidateService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -38,12 +37,18 @@ public class JobServiceImpl implements JobService{
 
     private final JobCandidateRepository jobCandidatesRepository;
 
+    private final SalaryJobRepository salaryJobRepository;
+
+    private final TypeJobRepository typeJobRepository;
+
     @Autowired
-    public JobServiceImpl(JobRepository jobRepository, CompanyService companyService, CandidateService candidateService, JobCandidateRepository jobCandidatesRepository) {
+    public JobServiceImpl(JobRepository jobRepository, CompanyService companyService, CandidateService candidateService, JobCandidateRepository jobCandidatesRepository, LevelJobRepository levelJobRepository, SalaryJobRepository salaryJobRepository, TypeJobRepository typeJobRepository) {
         this.jobRepository = jobRepository;
         this.companyService = companyService;
         this.candidateService = candidateService;
         this.jobCandidatesRepository = jobCandidatesRepository;
+        this.salaryJobRepository = salaryJobRepository;
+        this.typeJobRepository = typeJobRepository;
     }
 
     @Override
@@ -63,8 +68,8 @@ public class JobServiceImpl implements JobService{
         Job jobTemp = new Job();
 
         jobTemp.setTitle(job.getTitle());
-        jobTemp.setCreatedAt(new Date());
-        jobTemp.setUpdatedAt(new Date());
+        jobTemp.setCreatedAt(new Date().toString());
+        jobTemp.setUpdatedAt(new Date().toString());
         jobTemp.setExpiredAt(job.getExpiredAt());
         jobTemp.setSalary(job.getSalary());
         jobTemp.setDescription(job.getDescription());
@@ -90,6 +95,15 @@ public class JobServiceImpl implements JobService{
             return;
         }
 
+        List<Job_Candidates> jobCandidatesList = job.getJobCandidates();
+        jobCandidatesRepository.deleteAll(jobCandidatesList);
+
+        List<Salary_Jobs> salaryJobsList = job.getSalaryJobs();
+        salaryJobRepository.deleteAll(salaryJobsList);
+
+        List<Type_Jobs> typeJobsList = job.getTypeJobs();
+        typeJobRepository.deleteAll(typeJobsList);
+
         jobRepository.deleteById(id);
     }
 
@@ -109,7 +123,7 @@ public class JobServiceImpl implements JobService{
         }
 
         jobTemp.setTitle(job.getTitle());
-        jobTemp.setUpdatedAt(new Date());
+        jobTemp.setUpdatedAt(new Date().toString());
         jobTemp.setExpiredAt(job.getExpiredAt());
         jobTemp.setSalary(job.getSalary());
         jobTemp.setDescription(job.getDescription());
@@ -222,7 +236,7 @@ public class JobServiceImpl implements JobService{
         Join<Candidate, Account> account = candidate.join("account", JoinType.INNER);
         Join<Job, Company> company = job.join("companyId", JoinType.LEFT);
         Join<Job, Type_Jobs> types_jobs = job.join("typeJobs", JoinType.LEFT);
-        Join<Type_Jobs, Field_Job> field_jobs = types_jobs.join("fieldJobs", JoinType.LEFT);
+        Join<Type_Jobs, Field_Job> field_jobs = types_jobs.join("fieldJob", JoinType.LEFT);
         Join<Job, Level_Job_Detail> level_job_detail = job.join("levelJobId", JoinType.LEFT);
         Join<Level_Job_Detail, Level_Job> level_job = level_job_detail.join("levelJobs", JoinType.LEFT);
         Join<Job, Address_Company> address_company = job.join("addressCompanyId", JoinType.LEFT);
@@ -237,7 +251,7 @@ public class JobServiceImpl implements JobService{
     }
 
     @Override
-    public List<Job> getJobsForCompany(String userName, String status) {
+    public List<Job> getJobsForCompany(String userName, String status, String key) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Job> cq = cb.createQuery(Job.class);
 
@@ -246,7 +260,7 @@ public class JobServiceImpl implements JobService{
         Join<Company, Account> account = company.join("account", JoinType.LEFT);
         Join<Job, Address_Company> address_company = job.join("addressCompanyId", JoinType.LEFT);
         Join<Job, Type_Jobs> types_jobs = job.join("typeJobs", JoinType.LEFT);
-        Join<Type_Jobs, Field_Job> field_jobs = types_jobs.join("fieldJobs", JoinType.LEFT);
+        Join<Type_Jobs, Field_Job> field_jobs = types_jobs.join("fieldJob", JoinType.LEFT);
         Join<Job, Level_Job_Detail> level_job_detail = job.join("levelJobId", JoinType.LEFT);
         Join<Level_Job_Detail, Level_Job> level_job = level_job_detail.join("levelJobs", JoinType.LEFT);
 
@@ -260,9 +274,9 @@ public class JobServiceImpl implements JobService{
         }
 //        } else if ("2".equals(status)) {
 //            // No additional predicate needed
-//        } else if (key != null && !key.isEmpty()) {
-//            predicates.add(cb.like(job.get("title"), "%" + key + "%"));
-//        }
+        if (key != null && !key.isEmpty()) {
+            predicates.add(cb.like(job.get("title"), "%" + key + "%"));
+        }
 
         cq.where(predicates.toArray(new Predicate[0]));
         cq.orderBy(cb.desc(job.get("createdAt")));
@@ -270,4 +284,38 @@ public class JobServiceImpl implements JobService{
         TypedQuery<Job> query = entityManager.createQuery(cq);
         return query.getResultList();
     }
+
+    @Transactional
+    @Override
+    public void save(Job job) {
+        jobRepository.save(job);
+    }
+
+    @Override
+    public List<Job_Candidates> getJobAppliedCandidatesById(Long id, String username) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Job_Candidates> cq = cb.createQuery(Job_Candidates.class);
+
+        Root<Job_Candidates> jobCandidates = cq.from(Job_Candidates.class);
+        Join<Job_Candidates, Job> job = jobCandidates.join("job_id", JoinType.INNER);
+        Join<Job_Candidates, Candidate> candidate = jobCandidates.join("candidate_id", JoinType.INNER);
+        Join<Candidate, Account> account = candidate.join("account", JoinType.INNER);
+        Join<Job, Company> company = job.join("companyId", JoinType.LEFT);
+        Join<Job, Type_Jobs> types_jobs = job.join("typeJobs", JoinType.LEFT);
+        Join<Type_Jobs, Field_Job> field_jobs = types_jobs.join("fieldJob", JoinType.LEFT);
+        Join<Job, Level_Job_Detail> level_job_detail = job.join("levelJobId", JoinType.LEFT);
+        Join<Level_Job_Detail, Level_Job> level_job = level_job_detail.join("levelJobs", JoinType.LEFT);
+        Join<Job, Address_Company> address_company = job.join("addressCompanyId", JoinType.LEFT);
+        Join<Job, Salary_Jobs> salary_jobs = job.join("salaryJobs", JoinType.LEFT);
+        Join<Salary_Jobs, Salary> salaryJoin = salary_jobs.join("salary_id", JoinType.LEFT);
+
+        Predicate usernamePredicate = cb.equal(account.get("userName"), username);
+        Predicate JobIdPredicate = cb.equal(job.get("id"), id);
+        cq.where(usernamePredicate);
+        cq.where(JobIdPredicate);
+
+        TypedQuery<Job_Candidates> query = entityManager.createQuery(cq);
+        return query.getResultList();
+    }
+
 }

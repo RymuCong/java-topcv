@@ -17,12 +17,10 @@ public class Type_Jobs {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "name")
-    private String name;
-
-    @JsonManagedReference(value = "fieldJobs")
-    @OneToMany(mappedBy = "typeJobs", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    private List<Field_Job> fieldJobs;
+    @JsonBackReference(value = "fieldJobs")
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "field_job_id")
+    private Field_Job fieldJob;
 
     @JsonBackReference(value = "typeJobs")
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

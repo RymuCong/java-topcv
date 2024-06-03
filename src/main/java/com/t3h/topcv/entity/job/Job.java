@@ -35,13 +35,13 @@ public class Job {
     private String requirement;
 
     @Column(name = "expired_at")
-    private Date expiredAt;
+    private String expiredAt;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private String createdAt;
 
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private String updatedAt;
 
     @Column(name = "status")
     private String status;
@@ -53,7 +53,7 @@ public class Job {
     private Company companyId;
 
     @JsonManagedReference(value = "typeJobs")
-    @OneToMany( mappedBy = "job_id",cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @OneToMany( mappedBy = "job_id",cascade = CascadeType.ALL)
     private List<Type_Jobs> typeJobs;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
@@ -61,15 +61,15 @@ public class Job {
     private Address_Company addressCompanyId;
 
     @JsonManagedReference(value = "levelJobDetails")
-    @OneToMany(mappedBy = "job", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
     private List<Level_Job_Detail> levelJobId;
 
     @JsonManagedReference(value = "jobCandidates1")
-    @OneToMany(mappedBy = "job_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @OneToMany(mappedBy = "job_id", cascade = CascadeType.ALL)
     private List<Job_Candidates> jobCandidates;
 
     @JsonManagedReference(value = "jobSalary")
-    @OneToMany(mappedBy = "job_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
     private List <Salary_Jobs> salaryJobs;
 
 }

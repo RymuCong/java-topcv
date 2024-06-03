@@ -248,8 +248,9 @@ public class CandidateController {
 
     @GetMapping("/candidates/getInfo")
     public ResponseEntity<?> getInfoCandidate(@AuthenticationPrincipal UserDetails userDetails) {
+        System.out.println(accountRepo.findByUserName(userDetails.getUsername()).getId());
         Candidate candidate = candidateService.findCandidateByAccount(accountRepo.findByUserName(userDetails.getUsername()).getId());
-
+//        System.out.println(candidate.getName());
         SingleResponse response = new SingleResponse();
         response.setMessage("success");
         response.setData(candidate);
