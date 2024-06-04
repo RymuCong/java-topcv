@@ -14,9 +14,12 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,7 @@ public class JobServiceImpl implements JobService{
 
     @PersistenceContext
     private EntityManager entityManager;
+
     private final JobRepository jobRepository;
 
     private final CompanyService companyService;
@@ -41,14 +45,17 @@ public class JobServiceImpl implements JobService{
 
     private final TypeJobRepository typeJobRepository;
 
+    private final JavaMailSender javaMailSender;
+
     @Autowired
-    public JobServiceImpl(JobRepository jobRepository, CompanyService companyService, CandidateService candidateService, JobCandidateRepository jobCandidatesRepository, LevelJobRepository levelJobRepository, SalaryJobRepository salaryJobRepository, TypeJobRepository typeJobRepository) {
+    public JobServiceImpl(JobRepository jobRepository, CompanyService companyService, CandidateService candidateService, JobCandidateRepository jobCandidatesRepository, LevelJobRepository levelJobRepository, SalaryJobRepository salaryJobRepository, TypeJobRepository typeJobRepository, JavaMailSender javaMailSender) {
         this.jobRepository = jobRepository;
         this.companyService = companyService;
         this.candidateService = candidateService;
         this.jobCandidatesRepository = jobCandidatesRepository;
         this.salaryJobRepository = salaryJobRepository;
         this.typeJobRepository = typeJobRepository;
+        this.javaMailSender = javaMailSender;
     }
 
     @Override
@@ -216,6 +223,7 @@ public class JobServiceImpl implements JobService{
 
         jobCandidates.setCandidate_id(candidate);
         jobCandidates.setJob_id(job);
+        jobCandidates.setStatus("1");
         jobCandidates.setContent(applyJobResponse.getContent());
         jobCandidates.setCv_url(applyJobResponse.getCv_url());
 
@@ -316,6 +324,88 @@ public class JobServiceImpl implements JobService{
 
         TypedQuery<Job_Candidates> query = entityManager.createQuery(cq);
         return query.getResultList();
+    }
+
+    @Override
+    public List<Job_Candidates> getCandidatesbyIdJob(Long id) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Job_Candidates> cq = cb.createQuery(Job_Candidates.class);
+
+        Root<Job_Candidates> jobCandidates = cq.from(Job_Candidates.class);
+        Join<Job_Candidates, Job> job = jobCandidates.join("job_id", JoinType.INNER);
+        Join<Job_Candidates, Candidate> candidate = jobCandidates.join("candidate_id", JoinType.INNER);
+
+        Predicate JobIdPredicate = cb.equal(job.get("id"), id);
+        cq.where(JobIdPredicate);
+
+        TypedQuery<Job_Candidates> query = entityManager.createQuery(cq);
+        return query.getResultList();
+    }
+
+    @Value("${spring.mail.username}")
+    private String sender;
+
+    @Override
+    @Transactional
+    public void updateInterview(Long id, String interviewDay, String interviewAddress, String nameCompany, String emailCompany) {
+        // Fetch the Job_Candidates object with the given id
+        Job_Candidates jobCandidates = jobCandidatesRepository.findById(id).orElse(null);
+        if (jobCandidates == null) {
+            throw new RuntimeException("Job_Candidates not found");
+        }
+
+        // Fetch the Candidate and Account objects
+        Candidate candidate = jobCandidates.getCandidate_id();
+        Account account = candidate.getAccount();
+
+        // Update the interview_day and status
+        jobCandidates.setInterview_day(interviewDay);
+        jobCandidates.setStatus("2");
+        jobCandidatesRepository.save(jobCandidates);
+
+        // Email the candidate
+        SimpleMailMessage mail = new SimpleMailMessage();
+
+        mail.setFrom(sender);
+        mail.setTo(account.getEmail());
+        mail.setSubject("Thư mời phỏng vấn");
+        mail.setText("Xin chào " + candidate.getName() + ", Chúng tôi đánh giá cao CV của bạn. Nên chúng tôi muốn hẹn bạn 1 buổi phỏng vấn :\n" +
+                "Ngày phỏng vấn: " + interviewDay + "\n" +
+                "Địa chỉ phỏng vấn: " + interviewAddress + "\n" +
+                "Tên công ty: " + nameCompany + "\n" +
+                "Email công ty: " + emailCompany + "\n" +
+                "Chúng tôi rất mong sớm nhận được phản hồi từ bạn. Xin cảm ơn!");
+
+        javaMailSender.send(mail);
+    }
+
+    @Transactional
+    @Override
+    public void cancelCandidate(Long idApply, String nameCompany) {
+
+        Job_Candidates jobCandidates = jobCandidatesRepository.findById(idApply).orElse(null);
+        if (jobCandidates == null) {
+            throw new RuntimeException("Job_Candidates not found");
+        }
+
+        // Fetch the Candidate and Account objects
+        Candidate candidate = jobCandidates.getCandidate_id();
+        Account account = candidate.getAccount();
+
+        jobCandidates.setStatus("0");
+        jobCandidatesRepository.save(jobCandidates);
+
+        // Email the candidate
+        SimpleMailMessage mail = new SimpleMailMessage();
+
+        mail.setFrom(sender);
+        mail.setTo(account.getEmail());
+        mail.setSubject("THƯ CẢM ƠN & THÔNG BÁO KẾT QUẢ CV");
+        mail.setText("Xin chào " + candidate.getName() + ", Chúng tôi đánh giá cao CV của bạn. Nhưng rất tiếc, bạn hiện tại chưa phù hợp với công ty chúng tôi :\n" +
+                "Tên công ty: " + nameCompany + "\n" +
+                "Chúng tôi rất mong sẽ được hợp tác với bạn trong thời gian tới. Xin cảm ơn!");
+
+        javaMailSender.send(mail);
     }
 
 }

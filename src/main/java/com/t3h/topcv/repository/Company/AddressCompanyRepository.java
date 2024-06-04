@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AddressCompanyRepository extends JpaRepository<Address_Company, Long> {
+
+    Address_Company findByAddress(String address);
 }

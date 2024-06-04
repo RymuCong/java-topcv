@@ -48,4 +48,10 @@ public interface JobService {
     void save(Job job);
 
     List<Job_Candidates> getJobAppliedCandidatesById(Long id, String username);
+
+    List<Job_Candidates> getCandidatesbyIdJob(Long id);
+
+    void updateInterview(Long id, String interviewDay, String interviewAddress, String nameCompany, String emailCompany);
+
+    void cancelCandidate(Long idApply, String nameCompany);
 }

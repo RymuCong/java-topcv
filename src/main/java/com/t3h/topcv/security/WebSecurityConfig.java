@@ -26,6 +26,7 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
@@ -39,8 +40,10 @@ public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
 
     private final JwtAuthenticationFilter jwtAuthFilter;
 
-    private List<String> permitAllEndpointList = Arrays.asList(
+    private final List<String> permitAllEndpointList = Arrays.asList(
             "/auth/login",
+            "/auth/register",
+            "/auth/register-company",
             "/companies/getAll",
             "/candidates/getAll",
             "/jobs/getAllPaging",
@@ -48,8 +51,11 @@ public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
             "/jobs/getLiveJobs",
             "/jobs/getAll",
             "/salary/getAll",
-            "search/**", "jobs/searchJob",
-            "/jobs/leveljob/getAll"
+            "jobs/searchJob",
+            "/jobs/leveljob/getAll",
+            "/typeJob/getAll",
+            "/jobs/getNewJobs",
+            "/salary/getAll"
     );
 
     @Autowired
@@ -89,10 +95,14 @@ public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
 
+        RequestMatcher permitAllRequestMatcher = request -> {
+            String uri = request.getServletPath();
+            return permitAllEndpointList.stream().anyMatch(uri::matches);
+        };
+
         http.authorizeHttpRequests(configurer ->
                         configurer
-                                .requestMatchers(permitAllEndpointList.toArray(new String[0])).permitAll(
-                                )
+                                .requestMatchers(permitAllRequestMatcher).permitAll()
                                 .requestMatchers("companies/**").hasAnyRole("CANDIDATE", "COMPANY")
                                 .requestMatchers("candidates/**").hasAnyRole("CANDIDATE", "COMPANY")
                                 .requestMatchers("candidate/**").hasAnyRole("CANDIDATE", "COMPANY")

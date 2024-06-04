@@ -8,6 +8,7 @@ import com.t3h.topcv.repository.SalaryRepository;
 import com.t3h.topcv.service.CompanyService;
 import com.t3h.topcv.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -423,6 +424,50 @@ public class JobController {
             return ResponseEntity.ok().body("Job created successfully");
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/jobs/getCandidatesbyIdJob/{id}")
+    public ResponseEntity<?> getCandidatesbyIdJob(@PathVariable Long id) {
+        try {
+            List<Job_Candidates> result = jobService.getCandidatesbyIdJob(id);
+
+            JobCandidateResponse response = new JobCandidateResponse();
+            response.setMessage("success");
+            response.setData(result);
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/jobs/update-interview-date/{id}")
+    public ResponseEntity<?> updateInterview(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        try {
+            String interviewDay = body.get("interview_day");
+            String interviewAddress = body.get("interview_adress");
+            String nameCompany = body.get("nameCompany");
+            String emailCompany = body.get("emailCompany");
+            System.out.println("11111111111111111");
+            System.out.println(emailCompany);
+            jobService.updateInterview(id, interviewDay, interviewAddress, nameCompany, emailCompany);
+
+            return ResponseEntity.ok().body("Success");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/jobs/cancelCandidate/{idApply}")
+    public ResponseEntity<?> cancelCandidate(@PathVariable Long idApply, @RequestBody Map<String, String> body) {
+        try {
+            String nameCompany = body.get("nameCompany");
+
+            jobService.cancelCandidate(idApply, nameCompany);
+
+            return ResponseEntity.ok().body("Gửi mail từ chối thành công");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 }

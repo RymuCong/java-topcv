@@ -7,6 +7,7 @@ import com.t3h.topcv.dto.AuthResponse;
 import com.t3h.topcv.entity.Role;
 import com.t3h.topcv.entity.Account;
 import com.t3h.topcv.security.JwtTokenService;
+import com.t3h.topcv.user.CompanyUser;
 import com.t3h.topcv.user.WebUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void save(WebUser webAccount) {
+	public void saveCandidate(WebUser webAccount) {
 		Account account = new Account();
 
 		// assign account details to the account object
@@ -64,7 +65,29 @@ public class UserServiceImpl implements UserService {
 		account.setStatus(1);
 
 		// give account default role of "employee"
-		account.setRoles(Collections.singletonList(roleDao.findRoleByName("ROLE_EMPLOYEE")));
+		// create account_role in the database for the account
+		Role role = roleDao.findById(1L).orElseThrow(() -> new RuntimeException("Role not found"));
+		account.setRoles(Collections.singletonList(role));
+
+		// save account in the database
+		accountDao.save(account);
+	}
+
+	@Override
+	public void saveCompany(CompanyUser webAccount) {
+		Account account = new Account();
+
+		// assign account details to the account object
+		account.setUserName(webAccount.getUsername());
+		account.setPassword(passwordEncoder.encode(webAccount.getPassword()));
+		account.setFullName(webAccount.getName());
+		account.setEmail(webAccount.getEmail());
+		account.setStatus(1);
+
+		// give account default role of "company"
+		// create account_role in the database for the account
+		Role role = roleDao.findById(2L).orElseThrow(() -> new RuntimeException("Role not found"));
+		account.setRoles(Collections.singletonList(role));
 
 		// save account in the database
 		accountDao.save(account);
