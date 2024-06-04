@@ -1,8 +1,6 @@
 package com.t3h.topcv.entity.job;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import com.t3h.topcv.entity.company.Address_Company;
 import com.t3h.topcv.entity.company.Company;
 import jakarta.persistence.*;
@@ -37,35 +35,41 @@ public class Job {
     private String requirement;
 
     @Column(name = "expired_at")
-    private Date expiredAt;
+    private String expiredAt;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private String createdAt;
 
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private String updatedAt;
 
     @Column(name = "status")
     private String status;
 
+//    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "company_id")
     private Company companyId;
 
-    @OneToMany( mappedBy = "job_id",cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JsonManagedReference(value = "typeJobs")
+    @OneToMany( mappedBy = "job_id",cascade = CascadeType.ALL)
     private List<Type_Jobs> typeJobs;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "address_company_id")
     private Address_Company addressCompanyId;
 
-    @OneToMany(mappedBy = "job", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    private List<Level_Job> levelJobId;
+    @JsonManagedReference(value = "levelJobDetails")
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
+    private List<Level_Job_Detail> levelJobId;
 
-    @OneToMany(mappedBy = "job_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JsonManagedReference(value = "jobCandidates1")
+    @OneToMany(mappedBy = "job_id", cascade = CascadeType.ALL)
     private List<Job_Candidates> jobCandidates;
 
-    @OneToMany(mappedBy = "job_id", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JsonManagedReference(value = "jobSalary")
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
     private List <Salary_Jobs> salaryJobs;
 
 }

@@ -48,7 +48,7 @@ public class SkillController {
         Skill skillTemp = skillRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Skill not found with id " + id));
         skillTemp.setName(skill.getName());
-        skillTemp.setLevel(skill.getLevel());
+        skillTemp.setLevelJobs(skill.getLevelJobs());
         skillTemp.setLevelJobs(skill.getLevelJobs());
         skillTemp.setCandidateId(skill.getCandidateId());
         return skillRepo.save(skillTemp);

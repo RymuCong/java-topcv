@@ -1,4 +1,4 @@
-package com.t3h.topcv.repository;
+package com.t3h.topcv.repository.Job;
 
 import com.t3h.topcv.entity.company.Company;
 import com.t3h.topcv.entity.job.Job;
@@ -14,4 +14,5 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     List<Job> findTop6ByOrderByIdDesc();
 
     List<Job> findAllByStatus(String status);
+
 }

@@ -54,14 +54,15 @@ public class CompanyServiceImpl implements CompanyService{
         if (account == null) {
             throw new RuntimeException("Account not found with id " + id);
         }
+        Company companyTemp = new Company();
 
-        Type_Company typeCompany = typeCompanyRepository.findById(company.getTypeCompany().getId()).orElse(null);
-        if (typeCompany == null) {
-            System.out.println("lmao");
-            throw new RuntimeException("Type_Company not found with id " + company.getTypeCompany().getId());
+        Long typeId = null;
+        if (company.getTypeCompany() != null) {
+            typeId = company.getTypeCompany().getId();
+            Type_Company typeCompany = typeCompanyRepository.findById(typeId).orElse(null);
+            companyTemp.setTypeCompany(typeCompany);
         }
 
-        Company companyTemp = new Company();
         companyTemp.setAccount(account);
         companyTemp.setName(company.getName());
         companyTemp.setWebsite(company.getWebsite());
@@ -71,7 +72,7 @@ public class CompanyServiceImpl implements CompanyService{
         companyTemp.setPolicy(company.getPolicy());
         companyTemp.setCreatedAt(new Date().toString());
         companyTemp.setUpdatedAt(new Date().toString());
-        companyTemp.setTypeCompany(typeCompany);
+
         companyTemp.setJobs(company.getJobs());
         companyTemp.setNotifications(company.getNotifications());
         companyTemp.setAddressCompanies(company.getAddressCompanies());
@@ -102,6 +103,32 @@ public class CompanyServiceImpl implements CompanyService{
     @Override
     public List<Company> findBySize(Integer size) {
         return companyRepo.findBySizeLessThanEqual(size);
+    }
+
+    @Override
+    public List<Company> findByEmail(String email) {
+        return companyRepo.findByEmail(email);
+    }
+
+    @Transactional
+    @Override
+    public void updateInfo(Company companyTemp, Long id) {
+
+        Company company = companyRepo.findById(id).orElseThrow(() -> new RuntimeException("Company not found with id " + id));
+
+        companyTemp.setUpdatedAt(new Date().toString());
+        companyTemp.setPolicy(company.getPolicy());
+        companyTemp.setLinkFacebook(company.getLinkFacebook());
+        companyTemp.setName(company.getName());
+        companyTemp.setWebsite(company.getWebsite());
+        companyTemp.setPhone(company.getPhone());
+        companyTemp.setSize(company.getSize());
+        companyTemp.setEmail(company.getEmail());
+        companyTemp.setTypeCompany(company.getTypeCompany());
+        companyTemp.setDescription(company.getDescription());
+        companyTemp.setLogo(company.getLogo());
+
+        companyRepo.save(companyTemp);
     }
 
 //    @Override

@@ -2,7 +2,6 @@ package com.t3h.topcv.entity.candidate;
 
 import com.fasterxml.jackson.annotation.*;
 import com.t3h.topcv.entity.Account;
-import com.t3h.topcv.entity.job.Job;
 import com.t3h.topcv.entity.job.Job_Candidates;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,7 +9,7 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Data
 @Entity
 @Table(name = "candidate")
@@ -63,17 +62,33 @@ public class Candidate {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL)
+    @Lob
+    @Column(name = "about_me")
+    private String aboutMe;
+
+    @JsonManagedReference(value = "certificates")
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Certificate> certificates;
 
-    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "educations")
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Education> educations;
 
-    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "experiences")
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Experience> experiences;
 
-    @OneToMany(mappedBy = "candidate_id", cascade = CascadeType.ALL)
-    private List <Job_Candidates> jobCandidates;
+    @JsonManagedReference(value = "jobCandidates2")
+    @OneToMany(mappedBy = "candidate_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Job_Candidates> jobCandidates;
+
+    @JsonManagedReference(value = "projects")
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Project> projects;
+
+    @JsonManagedReference(value = "skills")
+    @OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Skill> skills;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "account_id")

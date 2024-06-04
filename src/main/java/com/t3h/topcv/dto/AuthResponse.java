@@ -1,6 +1,6 @@
 package com.t3h.topcv.dto;
 
-import lombok.AllArgsConstructor;
+import com.t3h.topcv.entity.job.Job_Candidates;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

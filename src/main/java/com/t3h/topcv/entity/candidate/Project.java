@@ -1,5 +1,7 @@
 package com.t3h.topcv.entity.candidate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,14 +27,15 @@ public class Project {
     private String description;
 
     @Column(name = "start_at")
-    private Date startAt;
+    private String startAt;
 
     @Column(name = "end_at")
-    private Date endAt;
+    private String endAt;
 
     @Column(name = "status")
     private Integer status;
 
+    @JsonBackReference(value = "projects")
     @ManyToOne
     @JoinColumn(name = "candidate_id")
     private Candidate candidateId;

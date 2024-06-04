@@ -6,6 +6,8 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class RoleDaoImpl implements RoleDao {
 
@@ -32,5 +34,11 @@ public class RoleDaoImpl implements RoleDao {
 		}
 		
 		return theRole;
+	}
+
+	@Override
+	public Optional<Role> findById(Long id) {
+		Role role = entityManager.find(Role.class, id);
+		return Optional.ofNullable(role);
 	}
 }

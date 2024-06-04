@@ -1,5 +1,6 @@
 package com.t3h.topcv.entity.company;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -31,6 +32,7 @@ public class Address_Company {
     @Column(name = "updated_at")
     private String updatedAt;
 
+    @JsonBackReference(value = "company-address")
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "company_id")
     private Company companyId;
